@@ -179,7 +179,7 @@ tbl_summary(
   )) %>%
   add_stat_label(label = all_continuous2() ~ c("Mean (SD)", "Median (Min/Max)")) %>%
   bold_labels() %>%                                       # <-- bold variable labels
-  modify_header(label = "**Descriptive Summary by ioban or no ioban**")  # <-- title
+  modify_header(label = "**Descriptive Summary**")  # <-- title
 
 #make a tibble for extracting elements of table one
 df_tbl1 <- as_tibble(tbl1)
@@ -198,8 +198,7 @@ tbl1 <- tbl1 |>
 
 # Comments
 
-Summary statistics and inferences (p-values) are in @tbl-table-one-show. I think most, if not all, of what you need for a VOS abstract is there, so I don't need to repeat them here. 
-
+Summary statistics are in @tbl-table-one-show. At this point the idea is to check the table and make sure the data seem as they should. Especially, check the variables' values for typos. As an example, for a hypothetical sex variable, the computer treats _Male_ and _male_ as different sexes.
 
 # Statistical Methods
 
