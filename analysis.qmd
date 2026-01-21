@@ -2,7 +2,12 @@
 title: "Analysis"
 date: "`r Sys.Date()`"
 author: "Rich Evans, PhD, PSTAT"
-format: pdf
+format: 
+  pdf:
+    include-in-header: 
+      text: |
+        \usepackage{lineno}
+        \linenumbers
 number-sections: true
 execute: 
   echo: false
