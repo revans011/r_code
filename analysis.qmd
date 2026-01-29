@@ -8,6 +8,8 @@ format:
       text: |
         \usepackage{lineno}
         \linenumbers
+        \usepackage{float}
+        \floatplacement{table}{H}
 number-sections: true
 execute: 
   echo: false
