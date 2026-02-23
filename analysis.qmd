@@ -158,6 +158,10 @@ df <- df |> mutate(
 #| label: table-one
 #| include: false
 
+#makes a list of differenet kinds of vars so that
+#the can be explicitly named in tbl_summary for correct formatting
+#tbl_vars<- processDataframeFor_tbl_summary(df)
+
 # OPTIONAL: list columns to include (otherwise it will use all)
 # vars_for_summary <- c("x1", "x2", "x3", "group_var")
 
@@ -174,8 +178,9 @@ tbl_summary(
       all_continuous()  ~ "continuous2",  # enables two-lines stats per continuous var
       all_dichotomous() ~ "categorical"   # show BOTH levels for 0/1 variables
     ),
-    statistic = list(
-      all_continuous2() ~ c("{mean} ({sd})", "{median} ({min}/{max})"),
+     statistic = list(
+      #all_continuous2() ~ c("{mean} ({sd})", "{median} ({min}/{max})"),
+      all_continuous2() ~ c("{mean} ({sd})", "{median} ({p25}, {p75})"),
       all_categorical() ~ "{n} ({p}%)"
     ),
     missing_text = "Missing"
@@ -184,7 +189,8 @@ tbl_summary(
     all_continuous()  ~ "kruskal.test",  # robust across distributions
     all_categorical() ~ "fisher.test"    # safe for small counts
   )) %>%
-  add_stat_label(label = all_continuous2() ~ c("Mean (SD)", "Median (Min/Max)")) %>%
+  add_stat_label(label = all_continuous2() ~ c("Mean (SD)", "Median (IQR)")) |>
+  #add_stat_label(label = all_continuous2() ~ c("Mean (SD)", "Median (Min/Max)")) %>%
   bold_labels() %>%                                       # <-- bold variable labels
   modify_header(label = "**Descriptive Summary**")  # <-- title
 
