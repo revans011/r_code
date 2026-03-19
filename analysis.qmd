@@ -27,6 +27,8 @@ output-file: "analysis_results"
 # a little template for installing. BUT perhaps better to use pacman for many packages
 # if (!requireNamespace("bnlearn", quietly = TRUE)) {
 #   install.packages("bnlearn", quietly = TRUE)}
+# pacman::p_load(geepack, pROC)
+
 
 # Set global chunk options
 knitr::opts_chunk$set(
