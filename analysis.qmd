@@ -291,5 +291,10 @@ invisible(lapply(pkgs, print_pkg_info))
 
 4. The tables are figures are **not** publication ready. Fine-tuning tables and figures takes a lot of time, so I save fine-tuning until the final ones are chosen for publication. That way, I'm not fine-tuning things that are discarded in the final draft.
 
+## Session information
+
+```{r}
+sessionInfo()
+```
 
 **End of Document**
