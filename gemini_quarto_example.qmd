@@ -1,0 +1,109 @@
+---
+title: "Statistical Report with Gemini Interpretation"
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Setup
+
+Load required packages and configure your Gemini API key. Store your key in
+an environment variable (`GEMINI_API_KEY`) rather than hard-coding it.
+
+```{r}
+#| label: setup
+
+library(httr2)
+library(glue)
+
+# Reads your API key from the environment.
+# Add this line to ~/.Renviron so it loads automatically:
+#   GEMINI_API_KEY=AIzaSy-xxx
+api_key <- Sys.getenv("GEMINI_API_KEY")
+```
+
+## Helper function: ask_gemini()
+
+A small wrapper that sends a prompt to the Gemini API and returns the
+reply as a plain character string.
+
+```{r}
+#| label: helper
+
+ask_gemini <- function(prompt,
+                       model   = "gemini-2.5-flash",
+                       api_key = Sys.getenv("GEMINI_API_KEY")) {
+
+  url <- glue(
+    "https://generativelanguage.googleapis.com/v1beta/models/",
+    "{model}:generateContent?key={api_key}"
+  )
+
+  request(url) |>
+    req_body_json(list(
+      contents = list(list(
+        parts = list(list(text = prompt))
+      ))
+    )) |>
+    req_retry(max_tries = 4, is_transient = \(r) resp_status(r) == 429) |>
+    req_perform() |>
+    resp_body_json() |>
+    (\(r) r$candidates[[1]]$content$parts[[1]]$text)()
+}
+```
+
+## Analysis
+
+We run a small regression on the built-in `mtcars` dataset — fuel efficiency
+(`mpg`) explained by engine displacement (`disp`) and horsepower (`hp`).
+
+```{r}
+#| label: analysis
+
+model_fit <- lm(mpg ~ disp + hp, data = mtcars)
+model_summary <- summary(model_fit)
+
+# Capture the printed summary as text so we can pass it to Gemini
+summary_text <- capture.output(print(model_summary)) |> paste(collapse = "\n")
+
+cat(summary_text)
+```
+
+## Gemini Interpretation
+
+We build a prompt that includes the raw R output and ask Gemini to
+interpret the results in plain language.
+
+```{r}
+#| label: gemini-interpretation
+
+prompt <- glue(
+  "You are a statistical consultant writing for a non-technical audience. ",
+  "Interpret the following R linear regression summary in 3–5 sentences. ",
+  "Focus on practical meaning: which predictors matter, how well the model ",
+  "fits, and any caveats worth noting.\n\n",
+  "```\n{summary_text}\n```"
+)
+
+interpretation <- ask_gemini(prompt)
+```
+
+`r interpretation`
+
+---
+
+## Notes on workflow
+
+* **`capture.output()`** converts any R printed output (summaries, tables,
+  test results) into a character vector, making it easy to embed in a prompt.
+* **`glue()`** keeps prompt construction readable; substitute `paste0()` if
+  you prefer base R.
+* **Model choice** — `gemini-2.5-flash` is fast and cheap for short
+  interpretation tasks; swap in `gemini-2.5-pro` for more nuanced commentary.
+* **Caching** — to avoid repeated API calls on every render, wrap
+  `ask_gemini()` in `memoise::memoise()` or cache the result with
+  `knitr::cache = TRUE` on the chunk.
+* **API key safety** — never commit your key to version control. Use
+  `.Renviron` or a secrets manager.
