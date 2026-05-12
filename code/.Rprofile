@@ -39,7 +39,7 @@ pacman::p_load(
 
 
 options(stringsAsFactors = FALSE)  # Avoid automatic conversion of strings to factors
-options(prompt = ">>> ")           # Change the R console prompt
+options(prompt = "<?> ")           # Change the R console prompt
 options(digits = 4)                # Set number of digits to display
 options(repos = c(CRAN = "https://mirror.las.iastate.edu/CRAN/"))
 
