@@ -45,6 +45,25 @@ set.seed(1234)
 
 ```
 
+
+```{python}
+#| label: summary-functions
+#| eval: FALSE
+
+
+"""
+| Function | Package | Best Used For... | Key Feature |
+| :--- | :--- | :--- | :--- |
+| `summary()` | Base R | Quick, universal check | Gives 5-number stats + NA count |
+| `str()` | Base R | Checking data types | Shows raw structural layout |
+| `glimpse()` | `dplyr` | Wide dataframes | Transposes data for easy scrolling |
+| `summarise()`| `dplyr` | Custom aggregations | Works perfectly with `group_by()` |
+| `skim()` | `skimr` | Deep exploratory analysis | Includes mini histograms in console |
+
+"""
+```
+
+
 ```{r}
 #| label: read-data
 #| include: false
